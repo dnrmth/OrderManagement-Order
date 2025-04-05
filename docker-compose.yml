@@ -1,0 +1,12 @@
+version: "3.8"
+
+services:
+  Orders:
+    image: postgres:latest
+    container_name: orders_db
+    environment:
+      - POSTGRES_USER=user
+      - POSTGRES_PASSWORD=password
+      - POSTGRES_DB=ordersdb
+    ports:
+      - "5433:5432"

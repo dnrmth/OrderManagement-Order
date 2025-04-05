@@ -23,8 +23,4 @@ public class OrderEntity {
 
     private Long clientId;
 
-    @OneToOne(cascade = CascadeType.ALL)
-    private PaymentEntity payment;
-
-
 }

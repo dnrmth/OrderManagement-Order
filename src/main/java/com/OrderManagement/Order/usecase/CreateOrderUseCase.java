@@ -9,7 +9,8 @@ import java.util.List;
 
 public class CreateOrderUseCase {
 
-    public static Order createOrder(Order oder) {
+    public static Order createOrder(List<ProductDto> products, LocalDateTime orderDate, Long clientId, PaymentDto payment) {
+
         return new Order(products, orderDate, clientId, payment);
     }
 
