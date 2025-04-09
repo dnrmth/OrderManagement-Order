@@ -2,6 +2,7 @@ package com.OrderManagement.Order.domain;
 
 import com.OrderManagement.Order.domain.dto.PaymentDto;
 import com.OrderManagement.Order.domain.dto.ProductDto;
+import com.OrderManagement.Order.enums.StatusOrder;
 import lombok.Getter;
 
 import java.time.LocalDateTime;
@@ -14,18 +15,28 @@ public class Order {
     private LocalDateTime orderDate;
     private Long clientId;
     private PaymentDto payment;
+    private StatusOrder statusOrder;
+    private double totalPrice;
 
-    public Order(List<ProductDto> products, LocalDateTime orderDate, Long clientId, PaymentDto payment) {
+    public Order(List<ProductDto> products, LocalDateTime orderDate, Long clientId, PaymentDto payment, StatusOrder statusOrder) {
         validateProducts(products);
         validateOrderDate(orderDate);
         validateClientId(clientId);
         validatePayment(payment);
+        validateStatusOrder(statusOrder);
 
         this.products = products;
         this.orderDate = orderDate;
         this.clientId = clientId;
         this.payment = payment;
+        this.statusOrder = statusOrder;
     }
+
+    public void setTotalPrice(double totalPrice) {
+        validateTotalPrice(totalPrice);
+        this.totalPrice = totalPrice;
+    }
+
 
     private static void validateProducts(List<ProductDto> products) {
         if (products == null || products.isEmpty()) {
@@ -47,4 +58,16 @@ public class Order {
             throw new IllegalArgumentException("Payment cannot be null");
         }
     }
+    private static void validateStatusOrder(StatusOrder statusOrder) {
+        if (statusOrder == null) {
+            throw new IllegalArgumentException("Status order cannot be null");
+        }
+    }
+
+    private static void validateTotalPrice(double totalPrice) {
+        if (totalPrice < 0) {
+            throw new IllegalArgumentException("Total price must be a positive number");
+        }
+    }
+
 }

@@ -1,8 +1,10 @@
 package com.OrderManagement.Order.gateway.database.jpa.entity;
 
 import com.OrderManagement.Order.domain.dto.ProductDto;
+import com.OrderManagement.Order.enums.StatusOrder;
 import jakarta.persistence.*;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Entity
@@ -13,14 +15,13 @@ public class OrderEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    @JoinColumn(name = "product_id")
-    private List<ProductEntity> products;
+    @Column(name = "order_date")
+    private LocalDateTime orderDate;
 
-
-    private String orderDate;
-
+    private StatusOrder status;
 
     private Long clientId;
+
+
 
 }

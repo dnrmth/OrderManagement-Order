@@ -9,7 +9,7 @@ import org.springframework.context.annotation.Configuration;
 public class OrderConfig {
 
     @Bean
-    public OrderJpaGateway orderJpaGateway(OrderRepository orderRepository) {
+    OrderJpaGateway orderJpaGateway(OrderRepository orderRepository) {
         return new OrderJpaGateway(orderRepository);
     }
 }

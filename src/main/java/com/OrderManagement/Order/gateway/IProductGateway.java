@@ -1,7 +1,4 @@
 package com.OrderManagement.Order.gateway;
 
-
-public interface OderGateway {
-
-
+public interface IProductGateway {
 }
