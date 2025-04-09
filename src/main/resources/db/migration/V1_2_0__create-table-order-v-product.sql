@@ -3,6 +3,7 @@ CREATE TABLE ORDER_V_PRODUCT (
     order_id BIGINT NOT NULL,
     product_id BIGINT NOT NULL,
     quantity INT NOT NULL,
+    price DECIMAL(10, 2) NOT NULL,
     PRIMARY KEY (id),
     FOREIGN KEY (order_id) REFERENCES ORDER(id)
 );
