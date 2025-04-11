@@ -10,7 +10,6 @@ import com.OrderManagement.Order.gateway.database.jpa.repository.ProductReposito
 
 import java.util.List;
 
-
 public class OrderJpaGateway implements IOderGateway {
 
     private final OrderRepository orderRepository;

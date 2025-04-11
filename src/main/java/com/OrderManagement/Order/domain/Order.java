@@ -1,6 +1,5 @@
 package com.OrderManagement.Order.domain;
 
-import com.OrderManagement.Order.controller.dto.OrderDto;
 import com.OrderManagement.Order.controller.dto.PaymentDto;
 import com.OrderManagement.Order.enums.StatusOrder;
 import lombok.AllArgsConstructor;
@@ -35,6 +34,7 @@ public class Order {
     }
 
     public Order(Long id, List<Product> products, LocalDateTime orderDate, Long clientId, StatusOrder statusOrder) {
+        validadeId(id);
         validateProducts(products);
         validateClientId(clientId);
         validateStatusOrder(statusOrder);
@@ -61,16 +61,19 @@ public class Order {
             throw new IllegalArgumentException("Products cannot be null or empty");
         }
     }
+
     private static void validateClientId(Long clientId) {
         if (clientId == null || clientId <= 0) {
             throw new IllegalArgumentException("Client ID must be a positive number");
         }
     }
+
     private static void validatePayment(PaymentDto payment) {
         if (payment == null) {
             throw new IllegalArgumentException("Payment cannot be null");
         }
     }
+
     private static void validateStatusOrder(StatusOrder statusOrder) {
         if (statusOrder == null) {
             throw new IllegalArgumentException("Status order cannot be null");
@@ -80,6 +83,12 @@ public class Order {
     private static void validateTotalPrice(double totalPrice) {
         if (totalPrice < 0) {
             throw new IllegalArgumentException("Total price must be a positive number");
+        }
+    }
+
+    private void validadeId(Long id) {
+        if (id == null || id <= 0) {
+            throw new IllegalArgumentException("ID must be a positive number");
         }
     }
 }

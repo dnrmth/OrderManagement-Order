@@ -1,6 +1,5 @@
 package com.OrderManagement.Order.gateway.database.jpa.entity;
 
-import com.OrderManagement.Order.controller.dto.PaymentDto;
 import com.OrderManagement.Order.domain.Order;
 import com.OrderManagement.Order.enums.StatusOrder;
 import jakarta.persistence.*;
