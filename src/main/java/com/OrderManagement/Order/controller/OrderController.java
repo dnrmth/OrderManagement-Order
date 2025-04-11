@@ -1,9 +1,9 @@
 package com.OrderManagement.Order.controller;
 
-import com.OrderManagement.Order.domain.Order;
-import com.OrderManagement.Order.domain.dto.CreateOrderDto;
+import com.OrderManagement.Order.controller.dto.OrderDto;
 import com.OrderManagement.Order.gateway.database.jpa.OrderJpaGateway;
 import com.OrderManagement.Order.usecase.CreateOrderUseCase;
+import jakarta.transaction.Transactional;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -20,11 +20,16 @@ public class OrderController {
 }
 
     @PostMapping
-    public Order createOrder(@RequestBody CreateOrderDto createOrderDto) {
+    @Transactional
+    public OrderDto createOrder(@RequestBody OrderDto createOrderDto) {
 
-        Order order = CreateOrderUseCase.createOrder(createOrderDto.products(), createOrderDto.orderDate(),
-                createOrderDto.clientId(), createOrderDto.payment());
+        var order = CreateOrderUseCase.createOrder(createOrderDto.products(),
+                createOrderDto.clientId(),
+                createOrderDto.payment(),
+                createOrderDto.statusOrder());
 
-        return order;
+        orderJpaGateway.createOrder(order);
+
+        return new OrderDto(order);
     }
 }

@@ -1,9 +1,9 @@
 CREATE TABLE ORDER_V_PRODUCT (
-    id BIGINT NOT NULL AUTO_INCREMENT,
-    order_id BIGINT NOT NULL,
-    product_id BIGINT NOT NULL,
+    id SERIAL NOT NULL,
+    order_id INTEGER NOT NULL,
+    product_id INTEGER NOT NULL,
     quantity INT NOT NULL,
     price DECIMAL(10, 2) NOT NULL,
     PRIMARY KEY (id),
-    FOREIGN KEY (order_id) REFERENCES ORDER(id)
+    FOREIGN KEY (order_id) REFERENCES ORDERS(id)
 );

@@ -1,51 +1,64 @@
 package com.OrderManagement.Order.domain;
 
-import com.OrderManagement.Order.domain.dto.PaymentDto;
-import com.OrderManagement.Order.domain.dto.ProductDto;
+import com.OrderManagement.Order.controller.dto.OrderDto;
+import com.OrderManagement.Order.controller.dto.PaymentDto;
 import com.OrderManagement.Order.enums.StatusOrder;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
 @Getter
+@AllArgsConstructor
 public class Order {
-    private Long orderID;
-    private List<ProductDto> products;
-    private LocalDateTime orderDate;
-    private Long clientId;
+    private Long id;
+    private final List<Product> products;
+    private final LocalDateTime orderDate;
+    private final Long clientId;
     private PaymentDto payment;
-    private StatusOrder statusOrder;
-    private double totalPrice;
+    private final StatusOrder statusOrder;
+    private final double totalPrice;
 
-    public Order(List<ProductDto> products, LocalDateTime orderDate, Long clientId, PaymentDto payment, StatusOrder statusOrder) {
+    public Order(List<Product> products, Long clientId, PaymentDto payment, StatusOrder statusOrder) {
         validateProducts(products);
-        validateOrderDate(orderDate);
         validateClientId(clientId);
         validatePayment(payment);
         validateStatusOrder(statusOrder);
 
         this.products = products;
-        this.orderDate = orderDate;
+        this.orderDate = LocalDateTime.now();
         this.clientId = clientId;
         this.payment = payment;
         this.statusOrder = statusOrder;
+        this.totalPrice = calculateTotalPrice();
     }
 
-    public void setTotalPrice(double totalPrice) {
+    public Order(Long id, List<Product> products, LocalDateTime orderDate, Long clientId, StatusOrder statusOrder) {
+        validateProducts(products);
+        validateClientId(clientId);
+        validateStatusOrder(statusOrder);
+
+        this.id = id;
+        this.products = products;
+        this.orderDate = orderDate;
+        this.clientId = clientId;
+        this.statusOrder = statusOrder;
+        this.totalPrice = calculateTotalPrice();
+    }
+
+    private double calculateTotalPrice() {
+        double totalPrice = 0;
+        for (Product product : products) {
+            totalPrice += product.getPrice() * product.getQuantity();
+        }
         validateTotalPrice(totalPrice);
-        this.totalPrice = totalPrice;
+        return totalPrice;
     }
 
-
-    private static void validateProducts(List<ProductDto> products) {
+    private static void validateProducts(List<Product> products) {
         if (products == null || products.isEmpty()) {
             throw new IllegalArgumentException("Products cannot be null or empty");
-        }
-    }
-    private static void validateOrderDate(LocalDateTime orderDate) {
-        if (orderDate == null) {
-            throw new IllegalArgumentException("Order date cannot be null");
         }
     }
     private static void validateClientId(Long clientId) {
@@ -69,5 +82,4 @@ public class Order {
             throw new IllegalArgumentException("Total price must be a positive number");
         }
     }
-
 }

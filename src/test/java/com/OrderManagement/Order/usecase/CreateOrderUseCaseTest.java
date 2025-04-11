@@ -1,6 +1,7 @@
 package com.OrderManagement.Order.usecase;
 
-import com.OrderManagement.Order.domain.dto.PaymentDto;
+import com.OrderManagement.Order.controller.dto.PaymentDto;
+import com.OrderManagement.Order.enums.StatusOrder;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDateTime;
@@ -17,11 +18,10 @@ public class CreateOrderUseCaseTest {
 
         assertDoesNotThrow(() -> {
             CreateOrderUseCase.createOrder(List.of(),
-                    LocalDateTime.now(),
                     1L,
                     new PaymentDto(
-                     1L, 1234567890,  "0cardType",  "cardHolderName", "cardExpiryDate", 123
-            ));
+                      1234567890,  "0cardType",  "cardHolderName", "cardExpiryDate", 123
+            ), StatusOrder.PENDING);
         });
     }
 }

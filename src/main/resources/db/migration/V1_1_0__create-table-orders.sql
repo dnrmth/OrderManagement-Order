@@ -1,6 +1,7 @@
-CREATE TABLE orders (
+CREATE TABLE ORDERS (
     id SERIAL PRIMARY KEY,
-    client_id BIGINT NOT NULL,
-    order_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    status VARCHAR(50) NOT NULL
+    client_id INTEGER NOT NULL,
+    order_date TIME NOT NULL,
+    status VARCHAR(20) NOT NULL,
+    total_price DECIMAL(10, 2) NOT NULL
 );
