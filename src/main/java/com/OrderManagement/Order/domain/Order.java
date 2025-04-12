@@ -12,14 +12,14 @@ import java.util.List;
 @AllArgsConstructor
 public class Order {
     private Long id;
-    private final List<Product> products;
+    private final List<ProductVOrder> products;
     private final LocalDateTime orderDate;
     private final Long clientId;
     private PaymentDto payment;
     private final StatusOrder statusOrder;
     private final double totalPrice;
 
-    public Order(List<Product> products, Long clientId, PaymentDto payment, StatusOrder statusOrder) {
+    public Order(List<ProductVOrder> products, Long clientId, PaymentDto payment, StatusOrder statusOrder) {
         validateProducts(products);
         validateClientId(clientId);
         validatePayment(payment);
@@ -33,7 +33,7 @@ public class Order {
         this.totalPrice = calculateTotalPrice();
     }
 
-    public Order(Long id, List<Product> products, LocalDateTime orderDate, Long clientId, StatusOrder statusOrder) {
+    public Order(Long id, List<ProductVOrder> products, LocalDateTime orderDate, Long clientId, StatusOrder statusOrder) {
         validadeId(id);
         validateProducts(products);
         validateClientId(clientId);
@@ -49,14 +49,14 @@ public class Order {
 
     private double calculateTotalPrice() {
         double totalPrice = 0;
-        for (Product product : products) {
+        for (ProductVOrder product : products) {
             totalPrice += product.getPrice() * product.getQuantity();
         }
         validateTotalPrice(totalPrice);
         return totalPrice;
     }
 
-    private static void validateProducts(List<Product> products) {
+    private static void validateProducts(List<ProductVOrder> products) {
         if (products == null || products.isEmpty()) {
             throw new IllegalArgumentException("Products cannot be null or empty");
         }

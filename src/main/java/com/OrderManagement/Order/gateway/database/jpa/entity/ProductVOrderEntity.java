@@ -1,14 +1,14 @@
 package com.OrderManagement.Order.gateway.database.jpa.entity;
 
-import com.OrderManagement.Order.domain.Product;
+import com.OrderManagement.Order.domain.ProductVOrder;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
 @Entity
 @Getter
-@Table(name = "order_v_product")
-public class ProductOrderEntity {
+@Table(name = "product_v_order")
+public class ProductVOrderEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -30,23 +30,23 @@ public class ProductOrderEntity {
     @Column(name = "price")
     private double currentPrice;
 
-    public ProductOrderEntity() {
+    public ProductVOrderEntity() {
     }
-    public ProductOrderEntity(Long orderId, Long productId, int quantity, double price) {
+    public ProductVOrderEntity(Long orderId, Long productId, int quantity, double price) {
         this.orderId = orderId;
         this.productId = productId;
         this.quantity = quantity;
         this.currentPrice = price;
     }
 
-    public ProductOrderEntity(Product product) {
+    public ProductVOrderEntity(ProductVOrder product) {
         this.productId = product.getProductId();
         this.quantity = product.getQuantity();
         this.currentPrice = product.getPrice();
     }
 
-    public Product toDomain() {
-        return new Product(
+    public ProductVOrder toDomain() {
+        return new ProductVOrder(
                 this.productId,
                 this.quantity,
                 this.currentPrice

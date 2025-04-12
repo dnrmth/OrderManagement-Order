@@ -9,7 +9,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 @Entity
-@Table(name="orders")
+@Table(name="order")
 @Getter
 public class OrderEntity {
 
@@ -39,10 +39,10 @@ public class OrderEntity {
         this.totalPrice = order.getTotalPrice();
     }
 
-    public Order toDomain(List<ProductOrderEntity> productOrderEntity) {
+    public Order toDomain(List<ProductVOrderEntity> productOrderEntity) {
         return new Order(
                 this.id,
-                productOrderEntity.stream().map(ProductOrderEntity::toDomain).toList(),
+                productOrderEntity.stream().map(ProductVOrderEntity::toDomain).toList(),
                 this.orderDate,
                 this.clientId,
                 this.status

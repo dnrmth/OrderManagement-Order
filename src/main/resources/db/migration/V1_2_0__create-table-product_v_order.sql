@@ -1,9 +1,9 @@
-CREATE TABLE ORDER_V_PRODUCT (
+CREATE TABLE product_v_order (
     id SERIAL NOT NULL,
     order_id INTEGER NOT NULL,
     product_id INTEGER NOT NULL,
     quantity INT NOT NULL,
     price DECIMAL(10, 2) NOT NULL,
     PRIMARY KEY (id),
-    FOREIGN KEY (order_id) REFERENCES ORDERS(id)
+    FOREIGN KEY (order_id) REFERENCES ORDER(id)
 );
