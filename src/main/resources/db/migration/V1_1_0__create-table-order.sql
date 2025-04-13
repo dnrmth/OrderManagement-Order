@@ -1,4 +1,4 @@
-CREATE TABLE ORDER (
+CREATE TABLE "orders" (
     id SERIAL PRIMARY KEY,
     client_id INTEGER NOT NULL,
     order_date TIME NOT NULL,

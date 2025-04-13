@@ -5,5 +5,5 @@ CREATE TABLE product_v_order (
     quantity INT NOT NULL,
     price DECIMAL(10, 2) NOT NULL,
     PRIMARY KEY (id),
-    FOREIGN KEY (order_id) REFERENCES ORDER(id)
+    FOREIGN KEY (order_id) REFERENCES "orders"(id)
 );
