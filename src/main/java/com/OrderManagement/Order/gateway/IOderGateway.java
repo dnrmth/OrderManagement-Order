@@ -5,4 +5,6 @@ import com.OrderManagement.Order.domain.Order;
 public interface IOderGateway {
 
     Order createOrder(Order order);
+
+    Order findOrderById(long id);
 }

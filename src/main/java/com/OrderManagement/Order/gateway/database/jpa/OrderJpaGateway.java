@@ -13,18 +13,27 @@ import java.util.List;
 public class OrderJpaGateway implements IOderGateway {
 
     private final OrderRepository orderRepository;
-    private final ProductVOrderRepository productRepository;
+    private final ProductVOrderRepository productVOrderRepository;
 
     public OrderJpaGateway(OrderRepository orderRepository, ProductVOrderRepository productRepository) {
         this.orderRepository = orderRepository;
-        this.productRepository = productRepository;
+        this.productVOrderRepository = productRepository;
     }
 
     @Override
     public Order createOrder(Order order) {
 
         OrderEntity orderEntity = orderRepository.save(new OrderEntity(order));
-        List<ProductVOrderEntity> productEntity = productRepository.saveAll(convertToProductEntityList(order.getProducts(), orderEntity.getId()));
+        List<ProductVOrderEntity> productEntity = productVOrderRepository.saveAll(convertToProductEntityList(order.getProducts(), orderEntity.getId()));
+
+        return orderEntity.toDomain(productEntity);
+    }
+
+    @Override
+    public Order findOrderById(long id) {
+
+        OrderEntity orderEntity = orderRepository.findById(id).orElseThrow(() -> new RuntimeException("Order not found"));
+        List<ProductVOrderEntity> productEntity = productVOrderRepository.findAllByOrderId(id);
 
         return orderEntity.toDomain(productEntity);
     }

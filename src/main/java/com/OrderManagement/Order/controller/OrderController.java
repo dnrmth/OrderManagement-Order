@@ -4,10 +4,7 @@ import com.OrderManagement.Order.controller.dto.OrderDto;
 import com.OrderManagement.Order.gateway.database.jpa.OrderJpaGateway;
 import com.OrderManagement.Order.usecase.CreateOrderUseCase;
 import jakarta.transaction.Transactional;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/order")
@@ -29,6 +26,13 @@ public class OrderController {
                 createOrderDto.statusOrder());
 
         orderJpaGateway.createOrder(order);
+
+        return new OrderDto(order);
+    }
+
+    @GetMapping("/{orderId}")
+    public OrderDto getOrder(@PathVariable Long orderId) {
+        var order = orderJpaGateway.findOrderById(orderId);
 
         return new OrderDto(order);
     }
