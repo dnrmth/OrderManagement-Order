@@ -6,6 +6,8 @@ import com.OrderManagement.Order.usecase.CreateOrderUseCase;
 import jakarta.transaction.Transactional;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/order")
 public class OrderController {
@@ -36,4 +38,15 @@ public class OrderController {
 
         return new OrderDto(order);
     }
+
+    @GetMapping("/client/{clientId}")
+    public List<OrderDto> getOrdersByClientId(@PathVariable Long clientId) {
+        var orders = orderJpaGateway.findOrdersByCustomerId(clientId);
+
+        return orders.stream()
+                .map(OrderDto::new)
+                .toList();
+    }
+
+
 }

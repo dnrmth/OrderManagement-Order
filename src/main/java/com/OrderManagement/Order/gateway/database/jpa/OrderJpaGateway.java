@@ -38,6 +38,17 @@ public class OrderJpaGateway implements IOderGateway {
         return orderEntity.toDomain(productEntity);
     }
 
+    @Override
+    public List<Order> findOrdersByCustomerId(long clientId) {
+
+        List<OrderEntity> orderEntities = orderRepository.findAllByClientId(clientId);
+        if (orderEntities.isEmpty()) {
+            throw new RuntimeException("No orders found for this customer");
+        }
+
+        return convertToOrderList(orderEntities);
+    }
+
     private List<ProductVOrderEntity> convertToProductEntityList(List<ProductVOrder> products, Long orderId) {
         return products.stream()
                 .map(product ->
@@ -45,5 +56,13 @@ public class OrderJpaGateway implements IOderGateway {
                                 product.getProductId(),
                                 product.getQuantity(),
                                 product.getPrice())).toList();
+    }
+
+    private List<Order> convertToOrderList(List<OrderEntity> orderEntities) {
+        return orderEntities.stream()
+                .map(orderEntity -> {
+                    List<ProductVOrderEntity> productEntity = productVOrderRepository.findAllByOrderId(orderEntity.getId());
+                    return orderEntity.toDomain(productEntity);
+                }).toList();
     }
 }
