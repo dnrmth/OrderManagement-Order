@@ -61,9 +61,7 @@ public class OrderController {
     @DeleteMapping("/cancel/{orderId}")
     @Transactional
     public ResponseEntity cancelOrder(@PathVariable Long orderId){
-        var order = orderGateway.findOrderById(orderId);
-
-        orderGateway.cancelOrder(order);
+        orderGateway.cancelOrder(orderId);
 
         return ResponseEntity.noContent().build();
     }
