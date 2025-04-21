@@ -2,6 +2,7 @@ package com.OrderManagement.Order.gateway.database.jpa;
 
 import com.OrderManagement.Order.domain.Order;
 import com.OrderManagement.Order.domain.ProductVOrder;
+import com.OrderManagement.Order.enums.StatusOrder;
 import com.OrderManagement.Order.gateway.IOderGateway;
 import com.OrderManagement.Order.gateway.database.jpa.entity.OrderEntity;
 import com.OrderManagement.Order.gateway.database.jpa.entity.ProductVOrderEntity;
@@ -9,6 +10,7 @@ import com.OrderManagement.Order.gateway.database.jpa.repository.OrderRepository
 import com.OrderManagement.Order.gateway.database.jpa.repository.ProductVOrderRepository;
 
 import java.util.List;
+import java.util.UUID;
 
 public class OrderJpaGateway implements IOderGateway {
 
@@ -47,6 +49,12 @@ public class OrderJpaGateway implements IOderGateway {
         }
 
         return convertToOrderList(orderEntities);
+    }
+
+    public void cancelOrder(Order order) {
+        var orderEntity = orderRepository.findById(order.getId()).orElseThrow(() -> new RuntimeException("Order not found"));
+        orderEntity.setStatus(StatusOrder.CANCELED);
+        orderRepository.save(orderEntity);
     }
 
     private List<ProductVOrderEntity> convertToProductEntityList(List<ProductVOrder> products, Long orderId) {

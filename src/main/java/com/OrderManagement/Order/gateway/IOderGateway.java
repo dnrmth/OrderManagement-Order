@@ -12,4 +12,6 @@ public interface IOderGateway {
 
     List<Order> findOrdersByClientId(long customerId);
 
+    void cancelOrder(Order order);
+
 }

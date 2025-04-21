@@ -4,6 +4,7 @@ import com.OrderManagement.Order.domain.Order;
 import com.OrderManagement.Order.enums.StatusOrder;
 import jakarta.persistence.*;
 import lombok.Getter;
+import lombok.Setter;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -11,6 +12,7 @@ import java.util.List;
 @Entity
 @Table(name="orders")
 @Getter
+@Setter
 public class OrderEntity {
 
     @Id
@@ -31,6 +33,9 @@ public class OrderEntity {
 
     public OrderEntity() {
     }
+
+
+
 
     public OrderEntity(Order order) {
         this.clientId = order.getClientId();
