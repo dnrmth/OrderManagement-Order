@@ -39,7 +39,7 @@ public class OrderJpaGateway implements IOderGateway {
     }
 
     @Override
-    public List<Order> findOrdersByCustomerId(long clientId) {
+    public List<Order> findOrdersByClientId(long clientId) {
 
         List<OrderEntity> orderEntities = orderRepository.findAllByClientId(clientId);
         if (orderEntities.isEmpty()) {

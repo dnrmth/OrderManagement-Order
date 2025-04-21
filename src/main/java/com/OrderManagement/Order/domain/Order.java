@@ -4,6 +4,7 @@ import com.OrderManagement.Order.controller.dto.PaymentDto;
 import com.OrderManagement.Order.enums.StatusOrder;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.Setter;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -16,7 +17,7 @@ public class Order {
     private final LocalDateTime orderDate;
     private final Long clientId;
     private PaymentDto payment;
-    private final StatusOrder statusOrder;
+    private StatusOrder statusOrder;
     private final double totalPrice;
 
     public Order(List<ProductVOrder> products, Long clientId, PaymentDto payment, StatusOrder statusOrder) {
@@ -54,6 +55,11 @@ public class Order {
         }
         validateTotalPrice(totalPrice);
         return totalPrice;
+    }
+
+    public void setStatusOrder(StatusOrder statusOrder) {
+        validateStatusOrder(statusOrder);
+        this.statusOrder = statusOrder;
     }
 
     private static void validateProducts(List<ProductVOrder> products) {

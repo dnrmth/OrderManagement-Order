@@ -10,5 +10,6 @@ public interface IOderGateway {
 
     Order findOrderById(long id);
 
-    List<Order> findOrdersByCustomerId(long customerId);
+    List<Order> findOrdersByClientId(long customerId);
+
 }
