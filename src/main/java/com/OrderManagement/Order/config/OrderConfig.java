@@ -1,4 +1,4 @@
-package com.OrderManagement.Order.Config;
+package com.OrderManagement.Order.config;
 
 import com.OrderManagement.Order.gateway.database.jpa.OrderJpaGateway;
 import com.OrderManagement.Order.gateway.database.jpa.repository.OrderRepository;
