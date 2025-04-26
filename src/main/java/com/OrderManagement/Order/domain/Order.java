@@ -1,10 +1,9 @@
 package com.OrderManagement.Order.domain;
 
 import com.OrderManagement.Order.controller.dto.PaymentDto;
-import com.OrderManagement.Order.enums.StatusOrder;
+import com.OrderManagement.Order.domain.enums.StatusOrder;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.Setter;
 
 import java.time.LocalDateTime;
 import java.util.List;

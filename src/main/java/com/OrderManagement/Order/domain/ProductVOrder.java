@@ -8,14 +8,14 @@ public class ProductVOrder {
 
     private Long orderId;
 
-    private Long productId;
+    private Long productSKU;
 
     private int quantity;
 
     private double price;
 
     public ProductVOrder(Long productId, int quantity, double price) {
-        this.productId = productId;
+        this.productSKU = productId;
         this.quantity = quantity;
         this.price = price;
     }

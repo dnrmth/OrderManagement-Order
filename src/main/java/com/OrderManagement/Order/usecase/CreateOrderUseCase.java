@@ -6,7 +6,7 @@ import com.OrderManagement.Order.domain.Order;
 import com.OrderManagement.Order.controller.dto.PaymentDto;
 
 import com.OrderManagement.Order.domain.ProductVOrder;
-import com.OrderManagement.Order.enums.StatusOrder;
+import com.OrderManagement.Order.domain.enums.StatusOrder;
 import com.OrderManagement.Order.gateway.IOderGateway;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -24,7 +24,7 @@ public class CreateOrderUseCase {
             throw new IllegalArgumentException("Product list cannot be null or empty");
         }
         List<ProductVOrder> productList = products.stream()
-                .map(productDto -> new ProductVOrder(productDto.productId(), productDto.quantity(), productDto.price()))
+                .map(productDto -> new ProductVOrder(productDto.productSKU(), productDto.quantity(), productDto.price()))
                 .toList();
 
         var orderEntity = orderGateway.createOrder(new Order(productList, clientId, payment, statusOrder));

@@ -2,7 +2,7 @@ package com.OrderManagement.Order.gateway.database.jpa;
 
 import com.OrderManagement.Order.domain.Order;
 import com.OrderManagement.Order.domain.ProductVOrder;
-import com.OrderManagement.Order.enums.StatusOrder;
+import com.OrderManagement.Order.domain.enums.StatusOrder;
 import com.OrderManagement.Order.gateway.IOderGateway;
 import com.OrderManagement.Order.gateway.database.jpa.entity.OrderEntity;
 import com.OrderManagement.Order.gateway.database.jpa.entity.ProductVOrderEntity;
@@ -10,7 +10,6 @@ import com.OrderManagement.Order.gateway.database.jpa.repository.OrderRepository
 import com.OrderManagement.Order.gateway.database.jpa.repository.ProductVOrderRepository;
 
 import java.util.List;
-import java.util.UUID;
 
 public class OrderJpaGateway implements IOderGateway {
 
@@ -33,7 +32,6 @@ public class OrderJpaGateway implements IOderGateway {
 
     @Override
     public Order findOrderById(long id) {
-
         OrderEntity orderEntity = orderRepository.findById(id).orElseThrow(() -> new RuntimeException("Order not found"));
         List<ProductVOrderEntity> productEntity = productVOrderRepository.findAllByOrderId(id);
 
@@ -42,7 +40,6 @@ public class OrderJpaGateway implements IOderGateway {
 
     @Override
     public List<Order> findOrdersByClientId(long clientId) {
-
         List<OrderEntity> orderEntities = orderRepository.findAllByClientId(clientId);
         if (orderEntities.isEmpty()) {
             throw new RuntimeException("No orders found for this customer");
@@ -61,7 +58,7 @@ public class OrderJpaGateway implements IOderGateway {
         return products.stream()
                 .map(product ->
                         new ProductVOrderEntity(orderId,
-                                product.getProductId(),
+                                product.getProductSKU(),
                                 product.getQuantity(),
                                 product.getPrice())).toList();
     }

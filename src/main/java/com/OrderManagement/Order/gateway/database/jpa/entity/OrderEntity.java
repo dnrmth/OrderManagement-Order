@@ -1,7 +1,7 @@
 package com.OrderManagement.Order.gateway.database.jpa.entity;
 
 import com.OrderManagement.Order.domain.Order;
-import com.OrderManagement.Order.enums.StatusOrder;
+import com.OrderManagement.Order.domain.enums.StatusOrder;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;

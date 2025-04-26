@@ -2,9 +2,8 @@ package com.OrderManagement.Order.usecase;
 
 import com.OrderManagement.Order.controller.dto.OrderDto;
 import com.OrderManagement.Order.domain.Order;
-import com.OrderManagement.Order.enums.StatusOrder;
+import com.OrderManagement.Order.domain.enums.StatusOrder;
 import com.OrderManagement.Order.gateway.IOderGateway;
-import com.OrderManagement.Order.gateway.database.jpa.entity.OrderEntity;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 

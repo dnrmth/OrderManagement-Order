@@ -1,9 +1,7 @@
 package com.OrderManagement.Order.controller;
 
 import com.OrderManagement.Order.controller.dto.OrderDto;
-import com.OrderManagement.Order.enums.StatusOrder;
-import com.OrderManagement.Order.gateway.IOderGateway;
-import com.OrderManagement.Order.gateway.database.jpa.OrderJpaGateway;
+import com.OrderManagement.Order.domain.enums.StatusOrder;
 import com.OrderManagement.Order.usecase.*;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -25,12 +23,11 @@ public class OrderController {
 
     @PostMapping
     @Transactional
-    public OrderDto createOrder(@RequestBody OrderDto createOrderDto) {
-
-        return createOrderUseCase.createOrder(createOrderDto.products(),
-                createOrderDto.clientId(),
-                createOrderDto.payment(),
-                createOrderDto.statusOrder());
+    public OrderDto createOrder(@RequestBody OrderDto orderDto) {
+        return createOrderUseCase.createOrder(orderDto.products(),
+                orderDto.clientId(),
+                orderDto.payment(),
+                orderDto.statusOrder());
     }
 
     @GetMapping("/{orderId}")
