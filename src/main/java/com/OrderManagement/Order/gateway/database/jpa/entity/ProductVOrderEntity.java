@@ -40,7 +40,7 @@ public class ProductVOrderEntity {
     }
 
     public ProductVOrderEntity(ProductVOrder product) {
-        this.productId = product.getProductSKU();
+        this.productId = product.getProductId();
         this.quantity = product.getQuantity();
         this.currentPrice = product.getPrice();
     }

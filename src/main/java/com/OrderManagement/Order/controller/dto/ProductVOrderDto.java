@@ -1,4 +1,4 @@
 package com.OrderManagement.Order.controller.dto;
 
-public record ProductVOrderDto(Long productSKU, int quantity, double price){
+public record ProductVOrderDto(Long productId, int quantity, double price){
 }
