@@ -48,6 +48,7 @@ public class OrderJpaGateway implements IOderGateway {
         return convertToOrderList(orderEntities);
     }
 
+    @Override
     public void cancelOrder(Long orderId) {
         var orderEntity = orderRepository.findById(orderId).orElseThrow(() -> new RuntimeException("Order not found"));
         orderEntity.setStatus(StatusOrder.CANCELED);

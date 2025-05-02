@@ -94,7 +94,7 @@ public class CreateOrderUseCase {
 
     /**
      * Sends the payment information to the payment service and checks if the payment was successful.
-     * @return true if payment is successful, false otherwise
+     * @return true if payment is successful, throws Exception otherwise.
      */
     private boolean makePayment(PaymentDto payment, Order order) {
         CardServiceDTO cardServiceDTO = new CardServiceDTO(payment.cardNumber(), payment.cvv(), payment.cardHolderName(), payment.cardExpiryDate());

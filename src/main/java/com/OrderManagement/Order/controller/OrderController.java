@@ -2,7 +2,6 @@ package com.OrderManagement.Order.controller;
 
 import com.OrderManagement.Order.controller.dto.OrderDto;
 import com.OrderManagement.Order.domain.enums.StatusOrder;
-import com.OrderManagement.Order.gateway.adapters.MSClient.ClientService;
 import com.OrderManagement.Order.usecase.*;
 import jakarta.transaction.Transactional;
 import org.springframework.http.ResponseEntity;
