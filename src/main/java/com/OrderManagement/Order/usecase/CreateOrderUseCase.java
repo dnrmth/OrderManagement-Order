@@ -34,6 +34,7 @@ public class CreateOrderUseCase {
             throw new IllegalArgumentException("Product list cannot be null or empty");
         }
 
+        // Checks if the client is active through the client service
         if(!clientService.confirmClientIsActive(clientId)){
             throw new IllegalArgumentException("Client is not active");
         }
@@ -42,27 +43,40 @@ public class CreateOrderUseCase {
                 .map(p -> fetchProduct(p.productId()))
                 .toList();
 
-        updateStock(productList);
+        var checkStock = updateStock(productList);
 
-        var order = orderGateway.createOrder(new Order(productList, clientId, payment, statusOrder));
+        var order = new Order(productList, clientId, payment, statusOrder);
 
-        makePayment(payment, order);
+        var checkPay = makePayment(payment, order);
 
-        return new OrderDto(order);
+        if (checkPay && checkStock) {
+            order.setStatusOrder(StatusOrder.FECHADO_COM_SUCESSO);
+        }
+
+        return new OrderDto(orderGateway.createOrder(order));
     }
 
-    private void updateStock(List<ProductVOrder> products) {
+    /**
+     * Updates the stock for each product in the order.
+     * @param products The list of products to update stock for.
+     * @return true if stock update is successful, throws Exception otherwise
+     */
+    private boolean updateStock(List<ProductVOrder> products) {
         products.forEach(productVOrder -> {
-            var stock = stockService.updateStock(
-                    productVOrder.getSKU(), productVOrder.getQuantity());
+            var stock = stockService.updateStock(productVOrder.getSKU(), productVOrder.getQuantity());
 
             if (!stock.getStatusCode().is2xxSuccessful()){
-                throw new IllegalArgumentException("Stock update failed");
+                throw new IllegalArgumentException(stock.getStatusCode() + " Stock update failed");
             }
         });
+        return true;
     }
 
-
+    /**
+     * Fetches the product information from the product service using the SKU.
+     * @param productSKU The SKU of the product to fetch.
+     * @return The ProductVOrder object containing product information.
+     */
     private ProductVOrder fetchProduct(Long productSKU) {
         var productServiceDto = productService.getProductBySKU(productSKU);
 
@@ -78,12 +92,19 @@ public class CreateOrderUseCase {
         return new ProductVOrder(product.id(), product.sku(), product.quantity(), product.price());
     }
 
-    private void makePayment(PaymentDto payment, Order order) {
+    /**
+     * Sends the payment information to the payment service and checks if the payment was successful.
+     * @return true if payment is successful, false otherwise
+     */
+    private boolean makePayment(PaymentDto payment, Order order) {
         CardServiceDTO cardServiceDTO = new CardServiceDTO(payment.cardNumber(), payment.cvv(), payment.cardHolderName(), payment.cardExpiryDate());
         PaymentServiceDto paymentServiceDto = new PaymentServiceDto(order.getId(), cardServiceDTO, order.getTotalPrice(), order.getId());
 
-        if(!paymentService.makePayment(paymentServiceDto).getStatusCode().is2xxSuccessful()){
-            throw new IllegalArgumentException("Payment failed");
+        var paymentServiceResponse = paymentService.makePayment(paymentServiceDto);
+
+        if(!paymentServiceResponse.getStatusCode().is2xxSuccessful()){
+            throw new IllegalArgumentException(paymentServiceResponse.getStatusCode() + " Payment failed");
         }
+        return true;
     }
 }
