@@ -13,3 +13,7 @@ resilience4j:
         baseConfig: default
       StockService:
         baseConfig: default
+      ClientService:
+        baseConfig: default
+      ProductService:
+        baseConfig: default

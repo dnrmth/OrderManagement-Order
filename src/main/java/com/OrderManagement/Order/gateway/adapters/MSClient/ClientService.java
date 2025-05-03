@@ -1,7 +1,8 @@
 package com.OrderManagement.Order.gateway.adapters.MSClient;
 
-import com.OrderManagement.Order.gateway.adapters.MSPayment.fallback.PaymentServiceFallback;
+
 import org.springframework.cloud.openfeign.FeignClient;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 
@@ -10,5 +11,5 @@ import org.springframework.web.bind.annotation.PathVariable;
 public interface ClientService {
 
     @GetMapping(value = "/isActive/{clientId}")
-    boolean confirmClientIsActive(@PathVariable Long clientId);
+    ResponseEntity<Boolean> confirmClientIsActive(@PathVariable Long clientId);
 }
