@@ -18,6 +18,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
@@ -43,17 +44,13 @@ public class CreateOrderUseCase {
                 .map(p -> fetchProduct(p.productId()))
                 .toList();
 
-        var checkStock = updateStock(productList);
+        var checkStockUpdate = updateStock(productList);
 
-        var order = new Order(productList, clientId, payment, statusOrder);
+        var order = orderGateway.createOrder(new Order(productList, clientId, payment, statusOrder));
 
-        var checkPay = makePayment(payment, order);
+        var checkPayment = makePayment(payment, order);
 
-        if (checkPay && checkStock) {
-            order.setStatusOrder(StatusOrder.FECHADO_COM_SUCESSO);
-        }
-
-        return new OrderDto(orderGateway.createOrder(order));
+        return new OrderDto(order);
     }
 
     /**
@@ -104,6 +101,9 @@ public class CreateOrderUseCase {
 
         if(!paymentServiceResponse.getStatusCode().is2xxSuccessful()){
             throw new IllegalArgumentException(paymentServiceResponse.getStatusCode() + " Payment failed");
+        }
+        if(Objects.requireNonNull(paymentServiceResponse.getBody()).orderId() == 9999L){
+            order.setStatusOrder(StatusOrder.FECHADO_SEM_CREDITO);
         }
         return true;
     }
