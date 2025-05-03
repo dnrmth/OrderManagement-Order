@@ -36,7 +36,7 @@ public class CreateOrderUseCase {
         }
 
         // Checks if the client is active through the client service
-        if(clientService.confirmClientIsActive(clientId).getStatusCode().is2xxSuccessful()){
+        if(!clientService.confirmClientIsActive(clientId).getStatusCode().is2xxSuccessful()){
             throw new IllegalArgumentException("Client is not active");
         }
 
