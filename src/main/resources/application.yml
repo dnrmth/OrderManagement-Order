@@ -1,3 +1,9 @@
+spring:
+  cloud:
+    openfeign:
+      circuitbreaker:
+        enabled: true
+
 resilience4j:
   circuitbreaker:
     configs:
