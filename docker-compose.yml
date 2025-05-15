@@ -3,11 +3,11 @@ version: "3.8"
 services:
   order-db:
     image: postgres:latest
-    container_name: orders_db
+    container_name: order-db
     environment:
       - POSTGRES_USER=user
       - POSTGRES_PASSWORD=password
-      - POSTGRES_DB=ordersdb
+      - POSTGRES_DB=order-db
     ports:
       - "5434:5432"
 
@@ -15,7 +15,7 @@ services:
     image: dnrmth/ordermanagement-order:latest
     container_name: ordermanagement-order
     environment:
-      - DB_URL=jdbc:postgresql://orders_db:5434/orders-db
+      - DB_URL=jdbc:postgresql://order-db:5432/order-db
       - DB_USER=user
       - DB_PASSWORD=password
     ports:
