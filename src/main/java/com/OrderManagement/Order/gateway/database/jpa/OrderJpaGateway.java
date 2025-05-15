@@ -59,6 +59,7 @@ public class OrderJpaGateway implements IOderGateway {
         return products.stream()
                 .map(product ->
                         new ProductVOrderEntity(orderId,
+                                product.getSKU(),
                                 product.getProductId(),
                                 product.getQuantity(),
                                 product.getPrice())).toList();

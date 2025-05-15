@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
 
 @FeignClient(name="StockService",
-        url = "http://localhost:8085/inventory",
+        url = "${stock.service.url}",
         fallback = StockServiceFallback.class)
 public interface StockService {
 

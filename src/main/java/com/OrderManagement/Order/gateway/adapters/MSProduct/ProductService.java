@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 
 @FeignClient(name = "ProductService",
-        url = "http://localhost:8084/product",
+        url = "${product.service.url}",
         fallback = ProductServiceFallback.class)
 public interface ProductService {
 

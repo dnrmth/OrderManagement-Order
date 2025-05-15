@@ -7,7 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 
 @FeignClient(name = "PaymentService",
-        url = "http://localhost:8083/payment",
+        url = "${payment.service.url}",
         fallback = PaymentServiceFallback.class)
 public interface PaymentService {
 

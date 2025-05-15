@@ -5,7 +5,6 @@ import com.OrderManagement.Order.domain.Order;
 import java.util.List;
 
 public interface IOderGateway {
-
     Order createOrder(Order order);
 
     Order findOrderById(long id);
@@ -13,5 +12,4 @@ public interface IOderGateway {
     List<Order> findOrdersByClientId(long customerId);
 
     void cancelOrder(Long order);
-
 }

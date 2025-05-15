@@ -18,6 +18,9 @@ public class ProductVOrderEntity {
     @Column(name = "order_id")
     private Long orderId;
 
+    @Column(name = "sku")
+    private String sku;
+
     @Setter
     @Column(name = "product_id")
     private Long productId;
@@ -32,8 +35,9 @@ public class ProductVOrderEntity {
 
     public ProductVOrderEntity() {
     }
-    public ProductVOrderEntity(Long orderId, Long productId, int quantity, double price) {
+    public ProductVOrderEntity(Long orderId, String sku, Long productId, int quantity, double price) {
         this.orderId = orderId;
+        this.sku = sku;
         this.productId = productId;
         this.quantity = quantity;
         this.currentPrice = price;
@@ -48,6 +52,7 @@ public class ProductVOrderEntity {
     public ProductVOrder toDomain() {
         return new ProductVOrder(
                 this.productId,
+                this.sku,
                 this.quantity,
                 this.currentPrice
         );

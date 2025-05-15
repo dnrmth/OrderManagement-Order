@@ -58,7 +58,7 @@ public class OrderController {
 
     @DeleteMapping("/cancel/{orderId}")
     @Transactional
-    public ResponseEntity cancelOrder(@PathVariable Long orderId){
+    public ResponseEntity<?> cancelOrder(@PathVariable Long orderId){
         return cancelOrderUseCase.cancelOrder(orderId);
     }
 }

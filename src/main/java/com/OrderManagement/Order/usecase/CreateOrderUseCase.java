@@ -4,7 +4,6 @@ import com.OrderManagement.Order.controller.dto.OrderDto;
 import com.OrderManagement.Order.controller.dto.ProductVOrderDto;
 import com.OrderManagement.Order.domain.Order;
 import com.OrderManagement.Order.controller.dto.PaymentDto;
-
 import com.OrderManagement.Order.domain.ProductVOrder;
 import com.OrderManagement.Order.domain.enums.StatusOrder;
 import com.OrderManagement.Order.gateway.IOderGateway;
@@ -15,6 +14,7 @@ import com.OrderManagement.Order.gateway.adapters.MSPayment.dto.PaymentServiceDt
 import com.OrderManagement.Order.gateway.adapters.MSProduct.ProductService;
 import com.OrderManagement.Order.gateway.adapters.MSStock.StockService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -30,15 +30,13 @@ public class CreateOrderUseCase {
     private final ProductService productService;
     private final StockService stockService;
 
+    @KafkaListener(topics = "create-order", groupId = "order-group")
     public OrderDto createOrder(List<ProductVOrderDto> productsSKU, Long clientId, PaymentDto payment, StatusOrder statusOrder) {
         if (productsSKU == null || productsSKU.isEmpty()) {
             throw new IllegalArgumentException("Product list cannot be null or empty");
         }
 
-        // Checks if the client is active through the client service
-        if(!clientService.confirmClientIsActive(clientId).getStatusCode().is2xxSuccessful()){
-            throw new IllegalArgumentException("Client is not active");
-        }
+        confirmClientIsActive(clientId);
 
         List<ProductVOrder> productList = productsSKU.stream()
                 .map(p -> fetchProduct(p.productId()))
@@ -51,6 +49,12 @@ public class CreateOrderUseCase {
         var checkPayment = makePayment(payment, order);
 
         return new OrderDto(order);
+    }
+
+    private void confirmClientIsActive(Long clientId) {
+        if(!clientService.confirmClientIsActive(clientId).getStatusCode().is2xxSuccessful()){
+            throw new IllegalArgumentException("Client is not active");
+        }
     }
 
     /**
@@ -104,7 +108,8 @@ public class CreateOrderUseCase {
         }
         if(Objects.requireNonNull(paymentServiceResponse.getBody()).orderId() == 9999L){
             order.setStatusOrder(StatusOrder.FECHADO_SEM_CREDITO);
+            orderGateway.createOrder(order);
         }
         return true;
-    }
+    }   
 }
