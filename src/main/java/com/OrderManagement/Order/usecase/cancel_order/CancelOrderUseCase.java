@@ -1,11 +1,11 @@
-package com.OrderManagement.Order.usecase;
+package com.OrderManagement.Order.usecase.cancel_order;
 
 import com.OrderManagement.Order.gateway.IOderGateway;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 @Service
-public class CancelOrderUseCase {
+public class CancelOrderUseCase implements ICancelOrderUseCase {
 
     private final IOderGateway orderGateway;
 
@@ -13,7 +13,7 @@ public class CancelOrderUseCase {
         this.orderGateway = orderGateway;
     }
 
-    public ResponseEntity cancelOrder(Long orderId) {
+    public ResponseEntity<?> cancelOrder(Long orderId) {
         if (orderId == null) {
             throw new IllegalArgumentException("Order ID cannot be null");
         }

@@ -1,4 +1,4 @@
-package com.OrderManagement.Order.usecase;
+package com.OrderManagement.Order.usecase.create_order;
 
 import com.OrderManagement.Order.controller.dto.OrderDto;
 import com.OrderManagement.Order.controller.dto.ProductVOrderDto;
@@ -15,22 +15,27 @@ import com.OrderManagement.Order.gateway.adapters.MSProduct.ProductService;
 import com.OrderManagement.Order.gateway.adapters.MSStock.StockService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.kafka.annotation.KafkaListener;
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
 
 @Service
 @RequiredArgsConstructor
-public class CreateOrderUseCase {
+public class CreateOrderUseCase implements ICreateOrderUseCase {
 
     private final IOderGateway orderGateway;
     private final ClientService clientService;
     private final PaymentService paymentService;
     private final ProductService productService;
     private final StockService stockService;
+    private final KafkaTemplate<String, OrderDto> kafkaTemplate;
 
     @KafkaListener(topics = "create-order", groupId = "order-group")
+    @Override
     public OrderDto createOrder(List<ProductVOrderDto> productsSKU, Long clientId, PaymentDto payment, StatusOrder statusOrder) {
         if (productsSKU == null || productsSKU.isEmpty()) {
             throw new IllegalArgumentException("Product list cannot be null or empty");
@@ -48,7 +53,22 @@ public class CreateOrderUseCase {
 
         var checkPayment = makePayment(payment, order);
 
-        return new OrderDto(order);
+        var orderDto = new OrderDto(order);
+
+        sendCreatedOrderToQueue(orderDto);
+
+        return orderDto;
+    }
+
+    private void sendCreatedOrderToQueue(OrderDto order) {
+        try{
+            Future<?> future = kafkaTemplate.send("created-order", order);
+
+            future.get();
+        }
+        catch (ExecutionException | InterruptedException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     private void confirmClientIsActive(Long clientId) {

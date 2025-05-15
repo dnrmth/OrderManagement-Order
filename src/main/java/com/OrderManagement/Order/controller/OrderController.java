@@ -2,7 +2,12 @@ package com.OrderManagement.Order.controller;
 
 import com.OrderManagement.Order.controller.dto.OrderDto;
 import com.OrderManagement.Order.domain.enums.StatusOrder;
-import com.OrderManagement.Order.usecase.*;
+
+import com.OrderManagement.Order.usecase.cancel_order.ICancelOrderUseCase;
+import com.OrderManagement.Order.usecase.create_order.ICreateOrderUseCase;
+import com.OrderManagement.Order.usecase.get_order.IGetOrderUseCase;
+import com.OrderManagement.Order.usecase.get_order.IGetOrdersByClientIdUseCase;
+import com.OrderManagement.Order.usecase.update_order.IUpdateOrderUseCase;
 import jakarta.transaction.Transactional;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -13,17 +18,17 @@ import java.util.List;
 @RequestMapping("/order")
 public class OrderController {
 
-    private final CreateOrderUseCase createOrderUseCase;
-    private final GetOrderUseCase getOrderUseCase;
-    private final GetOrdersByClientId getOrdersByClientId;
-    private final UpdateOrderUseCase updateOrderUseCase;
-    private final CancelOrderUseCase cancelOrderUseCase;
+    private final ICreateOrderUseCase createOrderUseCase;
+    private final IGetOrderUseCase getOrderUseCase;
+    private final IGetOrdersByClientIdUseCase getOrdersByClientId;
+    private final IUpdateOrderUseCase updateOrderUseCase;
+    private final ICancelOrderUseCase cancelOrderUseCase;
 
-    public OrderController(CreateOrderUseCase createOrderUseCase,
-                           GetOrderUseCase getOrderUseCase,
-                           GetOrdersByClientId getOrdersByClientId,
-                           UpdateOrderUseCase updateOrderUseCase,
-                           CancelOrderUseCase cancelOrderUseCase) {
+    public OrderController(ICreateOrderUseCase createOrderUseCase,
+                           IGetOrderUseCase getOrderUseCase,
+                           IGetOrdersByClientIdUseCase getOrdersByClientId,
+                           IUpdateOrderUseCase updateOrderUseCase,
+                           ICancelOrderUseCase cancelOrderUseCase) {
         this.createOrderUseCase = createOrderUseCase;
         this.getOrderUseCase = getOrderUseCase;
         this.getOrdersByClientId = getOrdersByClientId;

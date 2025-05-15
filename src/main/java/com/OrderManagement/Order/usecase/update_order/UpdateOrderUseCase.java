@@ -1,4 +1,4 @@
-package com.OrderManagement.Order.usecase;
+package com.OrderManagement.Order.usecase.update_order;
 
 import com.OrderManagement.Order.controller.dto.OrderDto;
 import com.OrderManagement.Order.domain.Order;
@@ -9,7 +9,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
-public class UpdateOrderUseCase {
+public class UpdateOrderUseCase implements IUpdateOrderUseCase{
 
     private final IOderGateway orderGateway;
 

@@ -1,4 +1,4 @@
-package com.OrderManagement.Order.usecase;
+package com.OrderManagement.Order.usecase.get_order;
 
 import com.OrderManagement.Order.controller.dto.OrderDto;
 import com.OrderManagement.Order.gateway.IOderGateway;
@@ -9,7 +9,7 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-public class GetOrdersByClientId {
+public class GetOrdersByClientIdUseCase implements IGetOrdersByClientIdUseCase {
 
     private final IOderGateway orderGateway;
 
