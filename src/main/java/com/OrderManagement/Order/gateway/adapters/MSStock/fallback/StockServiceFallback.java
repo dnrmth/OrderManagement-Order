@@ -1,6 +1,5 @@
 package com.OrderManagement.Order.gateway.adapters.MSStock.fallback;
 
-import com.OrderManagement.Order.gateway.adapters.MSStock.StockService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 
