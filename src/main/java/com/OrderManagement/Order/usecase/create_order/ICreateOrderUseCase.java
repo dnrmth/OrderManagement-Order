@@ -9,6 +9,6 @@ import java.util.List;
 
 public interface ICreateOrderUseCase {
 
-    OrderDto createOrder(List<ProductVOrderDto> productsSKU, Long clientId, PaymentDto payment, StatusOrder statusOrder);
+    OrderDto createOrder(OrderDto orderDto);
 
 }

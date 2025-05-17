@@ -39,10 +39,7 @@ public class OrderController {
     @PostMapping
     @Transactional
     public OrderDto createOrder(@RequestBody OrderDto orderDto) {
-            return createOrderUseCase.createOrder(orderDto.products(),
-                    orderDto.clientId(),
-                    orderDto.payment(),
-                    orderDto.statusOrder());
+            return createOrderUseCase.createOrder(orderDto);
     }
 
     @GetMapping("/{orderId}")

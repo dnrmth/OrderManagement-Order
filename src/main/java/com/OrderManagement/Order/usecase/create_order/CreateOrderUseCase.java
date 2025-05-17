@@ -19,7 +19,6 @@ import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Objects;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
@@ -36,7 +35,12 @@ public class CreateOrderUseCase implements ICreateOrderUseCase {
 
     @KafkaListener(topics = "create-order", groupId = "order-group")
     @Override
-    public OrderDto createOrder(List<ProductVOrderDto> productsSKU, Long clientId, PaymentDto payment, StatusOrder statusOrder) {
+    public OrderDto createOrder(OrderDto orderDto) {
+        List<ProductVOrderDto> productsSKU = orderDto.products();
+        Long clientId = orderDto.clientId();
+        PaymentDto payment = orderDto.payment();
+        StatusOrder statusOrder = orderDto.statusOrder();
+
         if (productsSKU == null || productsSKU.isEmpty()) {
             throw new IllegalArgumentException("Product list cannot be null or empty");
         }
@@ -44,7 +48,7 @@ public class CreateOrderUseCase implements ICreateOrderUseCase {
         confirmClientIsActive(clientId);
 
         List<ProductVOrder> productList = productsSKU.stream()
-                .map(p -> fetchProduct(p.productId()))
+                .map(p -> fetchProduct(p.productId(), p.quantity()) )
                 .toList();
 
         var checkStockUpdate = updateStock(productList);
@@ -53,16 +57,16 @@ public class CreateOrderUseCase implements ICreateOrderUseCase {
 
         var checkPayment = makePayment(payment, order);
 
-        var orderDto = new OrderDto(order);
+        var createdOrderDto = new OrderDto(order);
 
-        sendCreatedOrderToQueue(orderDto);
+        sendCreatedOrderToQueue(createdOrderDto);
 
-        return orderDto;
+        return createdOrderDto;
     }
 
     private void sendCreatedOrderToQueue(OrderDto order) {
         try{
-            Future<?> future = kafkaTemplate.send("created-order", order);
+            Future<?> future = kafkaTemplate.send("receive-created-order", order);
 
             future.get();
         }
@@ -71,6 +75,7 @@ public class CreateOrderUseCase implements ICreateOrderUseCase {
         }
     }
 
+    /**pretty self-explanatory*/
     private void confirmClientIsActive(Long clientId) {
         if(!clientService.confirmClientIsActive(clientId).getStatusCode().is2xxSuccessful()){
             throw new IllegalArgumentException("Client is not active");
@@ -84,7 +89,7 @@ public class CreateOrderUseCase implements ICreateOrderUseCase {
      */
     private boolean updateStock(List<ProductVOrder> products) {
         products.forEach(productVOrder -> {
-            var stock = stockService.updateStock(productVOrder.getSKU(), productVOrder.getQuantity());
+            var stock = stockService.removeQuantityInventory(productVOrder.getSKU(), productVOrder.getQuantity());
 
             if (!stock.getStatusCode().is2xxSuccessful()){
                 throw new IllegalArgumentException(stock.getStatusCode() + " Stock update failed");
@@ -98,7 +103,7 @@ public class CreateOrderUseCase implements ICreateOrderUseCase {
      * @param productSKU The SKU of the product to fetch.
      * @return The ProductVOrder object containing product information.
      */
-    private ProductVOrder fetchProduct(Long productSKU) {
+    private ProductVOrder fetchProduct(Long productSKU, int quantity) {
         var productServiceDto = productService.getProductBySKU(productSKU);
 
         if(!productServiceDto.getStatusCode().is2xxSuccessful()){
@@ -110,7 +115,7 @@ public class CreateOrderUseCase implements ICreateOrderUseCase {
 
         var product = productServiceDto.getBody();
 
-        return new ProductVOrder(product.id(), product.sku(), product.quantity(), product.price());
+        return new ProductVOrder(product.id(), product.sku(),quantity, product.price());
     }
 
     /**
@@ -124,11 +129,9 @@ public class CreateOrderUseCase implements ICreateOrderUseCase {
         var paymentServiceResponse = paymentService.makePayment(paymentServiceDto);
 
         if(!paymentServiceResponse.getStatusCode().is2xxSuccessful()){
-            throw new IllegalArgumentException(paymentServiceResponse.getStatusCode() + " Payment failed");
-        }
-        if(Objects.requireNonNull(paymentServiceResponse.getBody()).orderId() == 9999L){
             order.setStatusOrder(StatusOrder.FECHADO_SEM_CREDITO);
             orderGateway.createOrder(order);
+            throw new IllegalArgumentException(paymentServiceResponse.getStatusCode() + " Payment failed");
         }
         return true;
     }   

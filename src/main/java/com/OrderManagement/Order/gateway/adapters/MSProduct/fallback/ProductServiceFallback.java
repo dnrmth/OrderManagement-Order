@@ -16,7 +16,7 @@ public class ProductServiceFallback implements ProductService {
                 null,
                 null,
                 null,
-                null);
+                -1);
         return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE).body(productServiceDto);
     }
 }

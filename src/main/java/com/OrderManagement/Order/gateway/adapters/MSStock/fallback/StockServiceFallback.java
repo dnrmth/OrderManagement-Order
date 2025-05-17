@@ -5,10 +5,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 
 @Component
-public class StockServiceFallback implements StockService {
+public class StockServiceFallback{
 
-    @Override
-    public ResponseEntity<Void> updateStock(String sku, int quantity) {
+    public ResponseEntity<StockDto> removeQuantityInventory(String sku, int quantity) {
         return ResponseEntity.status(503).build();
     }
 }
