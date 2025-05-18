@@ -14,4 +14,6 @@ public interface StockService {
 
     @PutMapping("/removeQuantityInventory/{sku}/{quantity}")
     ResponseEntity<StockDto> removeQuantityInventory(@PathVariable("sku") String sku, @PathVariable("quantity") int quantity);
+
+    ResponseEntity<StockDto> addQuantityInventory(@PathVariable("sku") String sku, @PathVariable("quantity") int quantity);
 }

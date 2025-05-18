@@ -51,7 +51,7 @@ public class CreateOrderUseCase implements ICreateOrderUseCase {
                 .map(p -> fetchProduct(p.productId(), p.quantity()) )
                 .toList();
 
-        var checkStockUpdate = updateStock(productList);
+        var checkStockUpdate = removeFromStock(productList);
 
         var order = orderGateway.createOrder(new Order(productList, clientId, payment, statusOrder));
 
@@ -87,7 +87,7 @@ public class CreateOrderUseCase implements ICreateOrderUseCase {
      * @param products The list of products to update stock for.
      * @return true if stock update is successful, throws Exception otherwise
      */
-    private boolean updateStock(List<ProductVOrder> products) {
+    private boolean removeFromStock(List<ProductVOrder> products) {
         products.forEach(productVOrder -> {
             var stock = stockService.removeQuantityInventory(productVOrder.getSKU(), productVOrder.getQuantity());
 
@@ -130,9 +130,23 @@ public class CreateOrderUseCase implements ICreateOrderUseCase {
 
         if(!paymentServiceResponse.getStatusCode().is2xxSuccessful()){
             order.setStatusOrder(StatusOrder.FECHADO_SEM_CREDITO);
+
+            returnToStock(order.getProducts());
+
             orderGateway.createOrder(order);
             throw new IllegalArgumentException(paymentServiceResponse.getStatusCode() + " Payment failed");
         }
         return true;
-    }   
+    }
+
+    private void returnToStock(List<ProductVOrder> products) {
+
+        products.forEach(product -> {
+            var stock = stockService.addQuantityInventory(product.getSKU(), product.getQuantity());
+
+            if (!stock.getStatusCode().is2xxSuccessful()){
+                throw new IllegalArgumentException(stock.getStatusCode() + " Stock update failed");
+            }
+        });
+    }
 }
