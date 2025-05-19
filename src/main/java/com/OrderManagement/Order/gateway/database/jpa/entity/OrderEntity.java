@@ -34,10 +34,8 @@ public class OrderEntity {
     public OrderEntity() {
     }
 
-
-
-
     public OrderEntity(Order order) {
+        this.id = order.getId();
         this.clientId = order.getClientId();
         this.orderDate = order.getOrderDate();
         this.status = order.getStatusOrder();

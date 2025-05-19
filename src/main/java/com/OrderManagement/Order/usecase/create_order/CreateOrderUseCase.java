@@ -14,6 +14,8 @@ import com.OrderManagement.Order.gateway.adapters.MSPayment.dto.PaymentServiceDt
 import com.OrderManagement.Order.gateway.adapters.MSProduct.ProductService;
 import com.OrderManagement.Order.gateway.adapters.MSStock.StockService;
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
@@ -32,10 +34,12 @@ public class CreateOrderUseCase implements ICreateOrderUseCase {
     private final ProductService productService;
     private final StockService stockService;
     private final KafkaTemplate<String, OrderDto> kafkaTemplate;
+    private static final Logger logger = LoggerFactory.getLogger(CreateOrderUseCase.class);
 
     @KafkaListener(topics = "create-order", groupId = "order-group")
     @Override
     public OrderDto createOrder(OrderDto orderDto) {
+
         List<ProductVOrderDto> productsSKU = orderDto.products();
         Long clientId = orderDto.clientId();
         PaymentDto payment = orderDto.payment();
@@ -57,11 +61,26 @@ public class CreateOrderUseCase implements ICreateOrderUseCase {
 
         var checkPayment = makePayment(payment, order);
 
+        updateOrderStatus(checkPayment, checkStockUpdate, order);
+
         var createdOrderDto = new OrderDto(order);
 
         sendCreatedOrderToQueue(createdOrderDto);
 
         return createdOrderDto;
+    }
+
+    private void updateOrderStatus(boolean checkPayment, boolean checkStockUpdate, Order order) {
+        if (!checkPayment) {
+            return;
+        }
+        if (!checkStockUpdate) {
+            order.setStatusOrder(StatusOrder.FECHADO_SEM_ESTOQUE);
+            orderGateway.createOrder(order);
+            return;
+        }
+        order.setStatusOrder(StatusOrder.FECHADO_COM_SUCESSO);
+        orderGateway.createOrder(order);
     }
 
     private void sendCreatedOrderToQueue(OrderDto order) {
@@ -88,13 +107,14 @@ public class CreateOrderUseCase implements ICreateOrderUseCase {
      * @return true if stock update is successful, throws Exception otherwise
      */
     private boolean removeFromStock(List<ProductVOrder> products) {
-        products.forEach(productVOrder -> {
+        for(ProductVOrder productVOrder : products) {
             var stock = stockService.removeQuantityInventory(productVOrder.getSKU(), productVOrder.getQuantity());
 
             if (!stock.getStatusCode().is2xxSuccessful()){
-                throw new IllegalArgumentException(stock.getStatusCode() + " Stock update failed");
+                logger.error("Falha ao atualizar o estoque para o produto SKU: {}. Status: {}", productVOrder.getSKU(), stock.getStatusCode());
+                return false;
             }
-        });
+        }
         return true;
     }
 
@@ -122,7 +142,7 @@ public class CreateOrderUseCase implements ICreateOrderUseCase {
      * Sends the payment information to the payment service and checks if the payment was successful.
      * @return true if payment is successful, throws Exception otherwise.
      */
-    private boolean makePayment(PaymentDto payment, Order order) {
+    protected boolean makePayment(PaymentDto payment, Order order) {
         CardServiceDTO cardServiceDTO = new CardServiceDTO(payment.cardNumber(), payment.cvv(), payment.cardHolderName(), payment.cardExpiryDate());
         PaymentServiceDto paymentServiceDto = new PaymentServiceDto(order.getId(), cardServiceDTO, order.getTotalPrice(), order.getId());
 
@@ -134,7 +154,8 @@ public class CreateOrderUseCase implements ICreateOrderUseCase {
             returnToStock(order.getProducts());
 
             orderGateway.createOrder(order);
-            throw new IllegalArgumentException(paymentServiceResponse.getStatusCode() + " Payment failed");
+            logger.error("Falha no pagamento. Status: {}", paymentServiceResponse.getStatusCode());
+            return false;
         }
         return true;
     }

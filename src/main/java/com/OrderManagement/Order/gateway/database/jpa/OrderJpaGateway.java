@@ -55,7 +55,7 @@ public class OrderJpaGateway implements IOderGateway {
         orderRepository.save(orderEntity);
     }
 
-    private List<ProductVOrderEntity> convertToProductEntityList(List<ProductVOrder> products, Long orderId) {
+    protected List<ProductVOrderEntity> convertToProductEntityList(List<ProductVOrder> products, Long orderId) {
         return products.stream()
                 .map(product ->
                         new ProductVOrderEntity(orderId,
@@ -65,7 +65,7 @@ public class OrderJpaGateway implements IOderGateway {
                                 product.getPrice())).toList();
     }
 
-    private List<Order> convertToOrderList(List<OrderEntity> orderEntities) {
+    protected List<Order> convertToOrderList(List<OrderEntity> orderEntities) {
         return orderEntities.stream()
                 .map(orderEntity -> {
                     List<ProductVOrderEntity> productEntity = productVOrderRepository.findAllByOrderId(orderEntity.getId());

@@ -7,11 +7,11 @@ import org.springframework.stereotype.Component;
 @Component
 public class StockServiceFallback implements StockService {
 
-    public ResponseEntity<StockDto> removeQuantityInventory(String sku, int quantity) {
+    public ResponseEntity<?> removeQuantityInventory(String sku, int quantity) {
         return ResponseEntity.status(503).build();
     }
 
-    public ResponseEntity<StockDto> addQuantityInventory(String sku, int quantity) {
+    public ResponseEntity<?> addQuantityInventory(String sku, int quantity) {
         return ResponseEntity.status(503).build();
     }
 }
